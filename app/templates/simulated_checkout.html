@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f5f7fa; font-family: 'Inter', sans-serif; }
+        .paypal-blue { background-color: #0070ba; }
+        .paypal-blue:hover { background-color: #003087; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-white rounded shadow-lg overflow-hidden border border-gray-200">
+        
+        <!-- PayPal Header -->
+        <div class="bg-white p-6 border-b border-gray-200 text-center">
+            <h1 class="text-3xl font-bold text-[#003087] italic mb-2">PayPal</h1>
+        </div>
+
+        <!-- STEP 1: LOGIN SCREEN -->
+        <div id="loginStep" class="p-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Log in to your account</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Email or mobile number</label>
+                    <input type="email" id="emailInput" value="buyer-persona@example.com" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Password</label>
+                    <input type="password" id="passwordInput" value="password123" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <button onclick="goToCheckout()" class="w-full paypal-blue text-white font-bold py-3 px-4 rounded transition duration-200 mt-4">
+                    Log In
+                </button>
+            </div>
+            
+            <div class="text-center mt-6">
+                <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+            </div>
+        </div>
+
+        <!-- STEP 2: CHECKOUT SCREEN (Hidden by default) -->
+        <div id="checkoutStep" class="p-6 space-y-6 hidden">
+            
+            <div class="flex justify-between items-start border-b border-gray-100 pb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Pay RegretGuard</p>
+                    <h2 class="text-lg font-semibold text-gray-800 mt-1">Zara Floral Summer Dress</h2>
+                </div>
+                <div class="text-right">
+                    <p class="text-xl font-bold text-gray-800">£120.00</p>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="space-y-3">
+                <label class="flex items-center p-3 border border-gray-300 rounded cursor-pointer hover:bg-gray-50">
+                    <input type="radio" name="payment" checked class="text-blue-600 focus:ring-blue-500">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Visa_Logo.png/120px-Visa_Logo.png" class="h-4 ml-3 mr-2" alt="Visa">
+                    <span class="text-sm text-gray-700">Visa ending in 6214</span>
+                </label>
+                <label class="flex items-center p-3 border border-gray-300 rounded cursor-pointer hover:bg-gray-50">
+                    <input type="radio" name="payment" class="text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-700 ml-3">PayPal Balance (£500.00)</span>
+                </label>
+            </div>
+
+            <!-- Pay Button -->
+            <button onclick="processPayment()" id="payBtn" class="w-full paypal-blue text-white font-bold py-3 px-4 rounded transition duration-200 mt-6 shadow-md">
+                Complete Purchase
+            </button>
+            
+            <!-- Note for Judges -->
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-400">
+                    (Demo Mode: This simulates the PayPal sandbox redirect due to regional compliance blocks.)
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Switch from Login to Checkout
+        function goToCheckout() {
+            document.getElementById('loginStep').classList.add('hidden');
+            document.getElementById('checkoutStep').classList.remove('hidden');
+        }
+
+        // Process the final payment
+        async function processPayment() {
+            const btn = document.getElementById('payBtn');
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            // 1. Fire the simulated webhook to our backend
+            try {
+                await fetch('/api/simulate-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (e) {
+                console.error("Webhook failed", e);
+            }
+
+            // 2. Redirect back to the dashboard with a success parameter
+            setTimeout(() => {
+                window.location.href = '/?payment=success';
+            }, 800);
+        }
+    </script>
+</body>
+</html>

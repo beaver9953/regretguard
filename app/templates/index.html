@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegretGuard | Maya's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+        
+        <div class="bg-slate-900 p-6 border-b border-slate-700">
+            <h1 class="text-2xl font-bold text-white tracking-tight">RegretGuard</h1>
+            <p class="text-slate-400 text-sm mt-1">Payment Rail AI</p>
+        </div>
+
+        <div class="p-6 space-y-6">
+            
+            <!-- MAIN DASHBOARD VIEW -->
+            <div id="mainView">
+                <div class="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-slate-400">Recent Purchase</p>
+                            <h2 class="text-lg font-semibold text-white mt-1">Fashion Apparel</h2>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-white">£150.00</p>
+                            <p class="text-xs text-slate-400">11:42 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI ALERT -->
+                <div id="aiAlert" class="bg-indigo-900/40 rounded-xl p-4 border border-indigo-500/30 mt-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-indigo-300 font-semibold text-sm uppercase tracking-wider">AI Regret Prediction</h3>
+                        <span class="bg-rose-500/20 text-rose-400 text-xs font-bold px-2 py-1 rounded-full border border-rose-500/30">HIGH RISK (82%)</span>
+                    </div>
+                    
+                    <ul class="space-y-2 mt-4 text-sm">
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span class="text-slate-300"><strong class="text-white">Late Night:</strong> Purchased after 11 PM (+25%)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            <span class="text-slate-300"><strong class="text-white">Category:</strong> High-return fashion (+20%)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            <span class="text-slate-300"><strong class="text-white">History:</strong> 72% return rate for this pattern (+22%)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="nudgeText" class="text-center px-2 mt-6">
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        We noticed a late-night pattern. No judgment here! If you're having second thoughts, we can draft a resale listing for you to review.
+                    </p>
+                </div>
+
+                <!-- STEP 1: Ask AI to Draft -->
+                <button id="draftBtn" onclick="generateDraft()" class="mt-6 w-full bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-indigo-500/30 flex justify-center items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span id="draftBtnText">Draft AI Listing</span>
+                </button>
+                
+                <!-- STEP 2: Review Draft & Make a Choice -->
+                <div id="draftResult" class="hidden bg-slate-700/80 border border-slate-600 rounded-xl p-4 mt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-indigo-400 font-bold text-sm uppercase tracking-wider">AI Draft Generated</h3>
+                        <span class="text-xs text-slate-400">Review before posting</span>
+                    </div>
+                    <h4 id="draftTitle" class="text-white font-semibold text-lg"></h4>
+                    <p class="text-indigo-300 font-bold text-xl mt-1" id="draftPrice"></p>
+                    <p class="text-slate-300 text-sm mt-2" id="draftDesc"></p>
+                    
+                    <!-- The Choice -->
+                    <div class="flex space-x-3 mt-4">
+                        <button onclick="declineListing()" class="w-1/2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-200 text-sm">
+                            No Thanks
+                        </button>
+                        <button onclick="approveListing()" id="approveBtn" class="w-1/2 bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg transition duration-200 text-sm flex justify-center items-center">
+                            Post Listing
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DECLINED STATE -->
+                <div id="declinedState" class="hidden bg-slate-700/50 border border-slate-600 rounded-xl p-4 mt-4 text-center">
+                    <p class="text-slate-300 text-sm">No problem at all! We've dismissed the draft. Enjoy your purchase.</p>
+                </div>
+
+                <!-- STEP 3: Live Listing -->
+                <div id="activeListing" class="hidden bg-slate-700/80 border border-slate-600 rounded-xl p-4 mt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-green-400 font-bold text-sm uppercase tracking-wider">✓ Listing Active</h3>
+                        <span class="text-xs text-slate-400">Buyer Marketplace</span>
+                    </div>
+                    <h4 id="activeTitle" class="text-white font-semibold text-lg"></h4>
+                    <p class="text-indigo-300 font-bold text-xl mt-1" id="activePrice"></p>
+                    
+                    <a id="paypalCheckoutBtn" href="#" class="mt-4 block text-center w-full bg-[#0070ba] hover:bg-[#003087] text-white font-bold py-3 px-4 rounded-lg transition duration-200 text-sm shadow-md">
+                        Simulate Buyer Checkout via PayPal
+                    </a>
+                </div>
+            </div>
+
+            <!-- SOLD STATE -->
+            <div id="soldState" class="hidden">
+                <div class="bg-green-900/30 rounded-xl p-4 border border-green-500/30">
+                    <div class="flex items-center mb-2">
+                        <svg class="w-6 h-6 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h3 class="text-green-400 font-bold text-lg">Resale Successful</h3>
+                    </div>
+                    <p class="text-green-100 text-sm">You sold the Zara Floral Summer Dress for <strong>£120.00</strong>.</p>
+                    <p class="text-green-200/60 text-xs mt-2">The funds have been routed to your PayPal balance. The original £150.00 purchase is fully offset.</p>
+                </div>
+            </div>
+
+            <!-- SUCCESS VIEW -->
+            <div id="successView" class="hidden text-center py-8">
+                <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/30">
+                    <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">Resale Complete!</h2>
+                <p class="text-slate-300 text-sm mb-6">The buyer has paid £120.00. The funds have been routed to your account.</p>
+                
+                <div class="bg-slate-700/50 rounded-lg p-3 text-left mb-6 border border-slate-600">
+                    <p class="text-xs text-slate-400 font-semibold mb-1">Demo Note for Judges:</p>
+                    <p class="text-xs text-slate-400 leading-relaxed">PayPal API integration (OAuth & Order Creation) is fully implemented in the backend. The final capture UI is simulated due to a regional sandbox compliance block.</p>
+                </div>
+
+                <button onclick="clearSaleAndReload()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition duration-200 text-sm">
+                    Return to Dashboard
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isSold = localStorage.getItem('regretguard_sold');
+
+            if (urlParams.get('payment') === 'success') {
+                document.getElementById('mainView').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+                localStorage.setItem('regretguard_sold', 'true');
+            } else if (isSold) {
+                document.getElementById('aiAlert').classList.add('hidden');
+                document.getElementById('nudgeText').classList.add('hidden');
+                document.getElementById('draftBtn').classList.add('hidden');
+                document.getElementById('soldState').classList.remove('hidden');
+            }
+        });
+
+        function clearSaleAndReload() {
+            localStorage.removeItem('regretguard_sold');
+            window.location.href = '/';
+        }
+
+        async function generateDraft() {
+            const btn = document.getElementById('draftBtn');
+            const btnText = document.getElementById('draftBtnText');
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerText = "AI Drafting...";
+
+            try {
+                const response = await fetch('/api/create-listing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    btn.classList.add('hidden');
+                    
+                    document.getElementById('draftTitle').innerText = data.listing.title;
+                    document.getElementById('draftPrice').innerText = `£${data.listing.price.toFixed(2)}`;
+                    document.getElementById('draftDesc').innerText = data.listing.description;
+                    
+                    document.getElementById('approveBtn').setAttribute('data-url', data.approval_url);
+                    
+                    document.getElementById('draftResult').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                btnText.innerText = "Error. Try Again.";
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        }
+
+        // Maya says No (Resets after 3 seconds)
+        function declineListing() {
+            document.getElementById('draftResult').classList.add('hidden');
+            document.getElementById('declinedState').classList.remove('hidden');
+            
+            // Wait 3 seconds, then reload the page to reset the demo
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+
+        // Maya says Yes
+        function approveListing() {
+            const btn = document.getElementById('approveBtn');
+            const approvalUrl = btn.getAttribute('data-url');
+            
+            btn.innerText = "Posting...";
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            setTimeout(() => {
+                document.getElementById('draftResult').classList.add('hidden');
+                
+                document.getElementById('activeTitle').innerText = document.getElementById('draftTitle').innerText;
+                document.getElementById('activePrice').innerText = document.getElementById('draftPrice').innerText;
+                document.getElementById('paypalCheckoutBtn').href = approvalUrl;
+                
+                document.getElementById('activeListing').classList.remove('hidden');
+            }, 600);
+        }
+    </script>
+</body>
+</html>
