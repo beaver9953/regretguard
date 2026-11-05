@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RegretGuard | Maya's Dashboard</title>
+    <title>RegretGuard | Payment Rail AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
@@ -20,8 +20,30 @@
 
         <div class="p-6 space-y-6">
             
+            <!-- HERO / LANDING VIEW -->
+            <div id="heroView" class="text-center py-8">
+                <div class="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-indigo-500/30">
+                    <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <h2 class="text-3xl font-extrabold text-white mb-4">Stop Regret Before It Ships.</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6 px-4">
+                    RegretGuard uses AI and the PayPal payment rail to predict post-purchase regret and offer a cost-recovery exit instantly.
+                </p>
+                
+                <!-- NEW: Two separate buttons for the demo -->
+                <button id="simulateBtn" onclick="triggerWebhook(false)" class="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-indigo-500/30 flex justify-center items-center mb-3">
+                    <span id="simBtnText">Simulate Maya's Purchase (Real API)</span>
+                </button>
+
+                <button id="fallbackBtn" onclick="triggerWebhook(true)" class="w-full bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg flex justify-center items-center text-sm">
+                    Simulate Fallback Checkout (Demo)
+                </button>
+                
+                <p class="text-xs text-slate-500 mt-6">Built for the PayPal AI Hackathon 2026</p>
+            </div>
+
             <!-- MAIN DASHBOARD VIEW -->
-            <div id="mainView">
+            <div id="mainView" class="hidden">
                 <div class="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
                     <div class="flex justify-between items-start">
                         <div>
@@ -39,21 +61,21 @@
                 <div id="aiAlert" class="bg-indigo-900/40 rounded-xl p-4 border border-indigo-500/30 mt-6">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-indigo-300 font-semibold text-sm uppercase tracking-wider">AI Regret Prediction</h3>
-                        <span class="bg-rose-500/20 text-rose-400 text-xs font-bold px-2 py-1 rounded-full border border-rose-500/30">HIGH RISK (82%)</span>
+                        <span id="riskBadge" class="bg-rose-500/20 text-rose-400 text-xs font-bold px-2 py-1 rounded-full border border-rose-500/30">HIGH RISK</span>
                     </div>
                     
                     <ul class="space-y-2 mt-4 text-sm">
                         <li class="flex items-start">
                             <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-slate-300"><strong class="text-white">Late Night:</strong> Purchased after 11 PM (+25%)</span>
+                            <span class="text-slate-300"><strong class="text-white" id="feature1-title">Late Night:</strong> <span id="feature1-desc">Purchased after 11 PM</span> <span id="feature1-impact" class="text-indigo-400">(+25%)</span></span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                            <span class="text-slate-300"><strong class="text-white">Category:</strong> High-return fashion (+20%)</span>
+                            <span class="text-slate-300"><strong class="text-white" id="feature2-title">Category:</strong> <span id="feature2-desc">High-return fashion</span> <span id="feature2-impact" class="text-indigo-400">(+20%)</span></span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-4 h-4 text-indigo-400 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                            <span class="text-slate-300"><strong class="text-white">History:</strong> 72% return rate for this pattern (+22%)</span>
+                            <span class="text-slate-300"><strong class="text-white" id="feature3-title">History:</strong> <span id="feature3-desc">72% return rate</span> <span id="feature3-impact" class="text-indigo-400">(+22%)</span></span>
                         </li>
                     </ul>
                 </div>
@@ -64,13 +86,11 @@
                     </p>
                 </div>
 
-                <!-- STEP 1: Ask AI to Draft -->
                 <button id="draftBtn" onclick="generateDraft()" class="mt-6 w-full bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-indigo-500/30 flex justify-center items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     <span id="draftBtnText">Draft AI Listing</span>
                 </button>
                 
-                <!-- STEP 2: Review Draft & Make a Choice -->
                 <div id="draftResult" class="hidden bg-slate-700/80 border border-slate-600 rounded-xl p-4 mt-4">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-indigo-400 font-bold text-sm uppercase tracking-wider">AI Draft Generated</h3>
@@ -80,7 +100,6 @@
                     <p class="text-indigo-300 font-bold text-xl mt-1" id="draftPrice"></p>
                     <p class="text-slate-300 text-sm mt-2" id="draftDesc"></p>
                     
-                    <!-- The Choice -->
                     <div class="flex space-x-3 mt-4">
                         <button onclick="declineListing()" class="w-1/2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-200 text-sm">
                             No Thanks
@@ -91,12 +110,10 @@
                     </div>
                 </div>
 
-                <!-- DECLINED STATE -->
                 <div id="declinedState" class="hidden bg-slate-700/50 border border-slate-600 rounded-xl p-4 mt-4 text-center">
                     <p class="text-slate-300 text-sm">No problem at all! We've dismissed the draft. Enjoy your purchase.</p>
                 </div>
 
-                <!-- STEP 3: Live Listing -->
                 <div id="activeListing" class="hidden bg-slate-700/80 border border-slate-600 rounded-xl p-4 mt-4">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-green-400 font-bold text-sm uppercase tracking-wider">✓ Listing Active</h3>
@@ -106,7 +123,7 @@
                     <p class="text-indigo-300 font-bold text-xl mt-1" id="activePrice"></p>
                     
                     <a id="paypalCheckoutBtn" href="#" class="mt-4 block text-center w-full bg-[#0070ba] hover:bg-[#003087] text-white font-bold py-3 px-4 rounded-lg transition duration-200 text-sm shadow-md">
-                        Simulate Buyer Checkout via PayPal
+                        Proceed to Checkout
                     </a>
                 </div>
             </div>
@@ -145,15 +162,56 @@
     </div>
 
     <script>
+        let useFallback = false; // Global flag to track which button was clicked
+
+        async function triggerWebhook(isFallback) {
+            useFallback = isFallback; // Save the choice
+            
+            document.getElementById('heroView').classList.add('hidden');
+            document.getElementById('mainView').classList.remove('hidden');
+            
+            // Trigger the scoring display
+            try {
+                const response = await fetch('/webhook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event_type: "PAYMENT.CAPTURE.COMPLETED" })
+                });
+                
+                const data = await response.json();
+                const score = data.score_result;
+
+                if (score) {
+                    const scorePercent = Math.round(score.regret_probability * 100);
+                    document.getElementById('riskBadge').innerText = `${score.risk_level} RISK (${scorePercent}%)`;
+                    
+                    const contributions = score.explainability.contributions;
+                    if(contributions.length >= 3) {
+                        document.getElementById('feature1-desc').innerText = contributions[0].reason;
+                        document.getElementById('feature1-impact').innerText = `(${contributions[0].impact})`;
+                        document.getElementById('feature2-desc').innerText = contributions[1].reason;
+                        document.getElementById('feature2-impact').innerText = `(${contributions[1].impact})`;
+                        document.getElementById('feature3-desc').innerText = contributions[2].reason;
+                        document.getElementById('feature3-impact').innerText = `(${contributions[2].impact})`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isSold = localStorage.getItem('regretguard_sold');
 
             if (urlParams.get('payment') === 'success') {
+                document.getElementById('heroView').classList.add('hidden');
                 document.getElementById('mainView').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
                 localStorage.setItem('regretguard_sold', 'true');
             } else if (isSold) {
+                document.getElementById('heroView').classList.add('hidden');
+                document.getElementById('mainView').classList.remove('hidden');
                 document.getElementById('aiAlert').classList.add('hidden');
                 document.getElementById('nudgeText').classList.add('hidden');
                 document.getElementById('draftBtn').classList.add('hidden');
@@ -175,9 +233,11 @@
             btnText.innerText = "AI Drafting...";
 
             try {
+                // Send the useFallback flag to the backend
                 const response = await fetch('/api/create-listing', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ force_simulation: useFallback })
                 });
                 
                 const data = await response.json();
@@ -201,18 +261,15 @@
             }
         }
 
-        // Maya says No (Resets after 3 seconds)
         function declineListing() {
             document.getElementById('draftResult').classList.add('hidden');
             document.getElementById('declinedState').classList.remove('hidden');
             
-            // Wait 3 seconds, then reload the page to reset the demo
             setTimeout(() => {
                 window.location.reload();
             }, 3000);
         }
 
-        // Maya says Yes
         function approveListing() {
             const btn = document.getElementById('approveBtn');
             const approvalUrl = btn.getAttribute('data-url');
