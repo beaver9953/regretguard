@@ -13,6 +13,8 @@ class PayPalClient:
         self.client_id = os.getenv("PAYPAL_CLIENT_ID")
         self.client_secret = os.getenv("PAYPAL_CLIENT_SECRET")
         self.base_url = os.getenv("PAYPAL_API_BASE", "https://api-m.sandbox.paypal.com")
+        # This pulls the live URL from Render, or falls back to localhost for local dev
+        self.app_base_url = os.getenv("APP_BASE_URL", "http://localhost:8000")
         
     def get_access_token(self):
         """Generates an OAuth 2.0 access token."""
@@ -45,8 +47,9 @@ class PayPalClient:
                 "description": "RegretGuard Resale Item"
             }],
             "application_context": {
-                "return_url": "http://localhost:8000/?payment=success",
-                "cancel_url": "http://localhost:8000/?payment=cancelled"
+                # Now it dynamically uses the Render URL or localhost
+                "return_url": f"{self.app_base_url}/?payment=success",
+                "cancel_url": f"{self.app_base_url}/?payment=cancelled"
             }
         }
         
